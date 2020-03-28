@@ -11,6 +11,9 @@ const { Option } = Select
 
 class CreateGameForm extends React.Component {
   numPlayerData = [3, 4, 5, 6, 7, 8, 9, 10]
+  state = {
+    numPlayers: 3
+  }
   layout = {
     labelCol: {
       span: 8,
@@ -22,7 +25,11 @@ class CreateGameForm extends React.Component {
   handleCreateGame = async () => {
     try {
       const {data: message} =  Axios
-        .get("http://localhost:3001/")
+        .post("http://localhost:3001/",
+          {
+            ...this.state.game
+          }
+        )
         .then((res) =>{
           return res
         })
@@ -35,16 +42,13 @@ class CreateGameForm extends React.Component {
 
   }  
 
-  onFinish = async(values) => {
-    console.log(values);
-    console.log("values");
-    await this.handleCreateGame()
+  onFinish = async(game) => {
+    console.log(game)
+    this.setState(
+      {game},
+      await this.handleCreateGame()
+    )
   };
-
-  handleNumPlayerChange = (numPlayers) => {
-    console.log({numPlayers})
-    this.setState({numPlayers})
-  }
   render(){
     return (
       <Form 
@@ -54,16 +58,17 @@ class CreateGameForm extends React.Component {
       >
         <Form.Item
           label="Game Name"
-          name="gamename"
+          name="gameName"
         >
           <Input/>
         </Form.Item>
         <Form.Item
           label="Number of Players"
-          name="numplayers"
+          name="numPlayers"
         >
           <Select
-            defaultValue="3"
+            defaultValue={this.state.numPlayers}
+            value={this.state.numPlayers}
             onChange={this.handleNumPlayerChange}
           >
             {this.numPlayerData.map(numPlayer => (
