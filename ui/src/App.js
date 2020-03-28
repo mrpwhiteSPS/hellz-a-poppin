@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import CreateGameForm from './home/index.js'
+import 'antd/dist/antd.css'
 
 function App(props) {
   return (

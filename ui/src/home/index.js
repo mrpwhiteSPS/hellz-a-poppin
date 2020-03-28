@@ -2,10 +2,12 @@ import React from 'react';
 import { 
   Button, 
   Input,
-  Form
+  Form,
+  Select
 } from 'antd';
-import { AppstoreAddOutlined }from '@ant-design/icons';
+// import { AppstoreAddOutlined }from '@ant-design/icons';
 import Axios from 'axios';
+const { Option } = Select
 
 class CreateGameForm extends React.Component {
   numPlayerData = [3, 4, 5, 6, 7, 8, 9, 10]
@@ -14,7 +16,7 @@ class CreateGameForm extends React.Component {
       span: 8,
     },
     wrapperCol: {
-      span: 16,
+      span: 8,
     },
   };
   handleCreateGame = async () => {
@@ -40,22 +42,24 @@ class CreateGameForm extends React.Component {
   };
 
   handleNumPlayerChange = (numPlayers) => {
+    console.log({numPlayers})
     this.setState({numPlayers})
   }
   render(){
     return (
-      <Form {...this.layout} 
+      <Form 
+        {...this.layout} 
         name="nest-messages" 
         onFinish={this.onFinish} 
       >
         <Form.Item
-          label="Gamename"
+          label="Game Name"
           name="gamename"
         >
           <Input/>
         </Form.Item>
         <Form.Item
-          label="NumPlayers"
+          label="Number of Players"
           name="numplayers"
         >
           <Select
@@ -63,8 +67,8 @@ class CreateGameForm extends React.Component {
             onChange={this.handleNumPlayerChange}
           >
             {this.numPlayerData.map(numPlayer => (
-              <Option key={numPlayer}>{numPlayer}</Option>
-            ))}
+            <Option key={numPlayer}>{numPlayer}</Option>
+          ))}
           </Select>
         </Form.Item>
 
