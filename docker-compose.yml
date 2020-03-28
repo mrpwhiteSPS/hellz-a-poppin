@@ -1,0 +1,45 @@
+version: '3'
+services:
+  ui:
+    container_name: ui
+    build:
+      context: .
+      dockerfile: ./ui/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui/public:/app/ui/public
+      - ./ui/src:/app/ui/src
+    networks:
+      - default
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    command: npm start
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./api/controllers:/app/api/controllers
+      - ./api/models:/app/api/models
+      - ./api/mongo:/app/api/mongo
+      - ./api/index.js:/app/api/index.js
+    networks:
+      - default
+    environment:
+      - NODE_ENV=development
+    command: npm start
+  db:
+    container_name: db
+    build:
+      context: .
+      dockerfile: ./db/Dockerfile 
+    networks:
+      - default
+    ports:
+      - "27017:27017"
+    command: mongod
