@@ -14,8 +14,8 @@ app.get('/', async function(req, res) {
   try {
     await dbClient.connect();
 
-    const db = dbClient.db("cards");
-    let r = await db.collection('card').insertOne({a:1});
+    const db = dbClient.db("hap");
+    let r = await db.collection('games').insertOne({a:1});
 
     res.send(r.insertedId);
   } catch (err) {
