@@ -8,6 +8,7 @@ import { AppstoreAddOutlined }from '@ant-design/icons';
 import Axios from 'axios';
 
 class CreateGameForm extends React.Component {
+  numPlayerData = [3, 4, 5, 6, 7, 8, 9, 10]
   layout = {
     labelCol: {
       span: 8,
@@ -38,6 +39,9 @@ class CreateGameForm extends React.Component {
     await this.handleCreateGame()
   };
 
+  handleNumPlayerChange = (numPlayers) => {
+    this.setState({numPlayers})
+  }
   render(){
     return (
       <Form {...this.layout} 
@@ -50,6 +54,20 @@ class CreateGameForm extends React.Component {
         >
           <Input/>
         </Form.Item>
+        <Form.Item
+          label="NumPlayers"
+          name="numplayers"
+        >
+          <Select
+            defaultValue="3"
+            onChange={this.handleNumPlayerChange}
+          >
+            {this.numPlayerData.map(numPlayer => (
+              <Option key={numPlayer}>{numPlayer}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Submit
