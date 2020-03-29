@@ -5,11 +5,11 @@ import {
   Form,
   Select
 } from 'antd';
-// import { AppstoreAddOutlined }from '@ant-design/icons';
+import {withRouter} from 'react-router-dom'
 import Axios from 'axios';
 const { Option } = Select
 
-class CreateGameForm extends React.Component {
+class Home extends React.Component {
   numPlayerData = [3, 4, 5, 6, 7, 8, 9, 10]
   state = {
     numPlayers: 3
@@ -22,33 +22,26 @@ class CreateGameForm extends React.Component {
       span: 8,
     },
   };
-  handleCreateGame = async () => {
+
+  onFinish = async(game) => {
     try {
-      const {data: message} =  Axios
-        .post("http://localhost:3001/",
-          {
-            ...this.state.game
-          }
+      const {data: message} =  await Axios
+        .post(
+          "http://localhost:3001/games",
+          {...game }
         )
         .then((res) =>{
           return res
         })
         .catch(err => console.log(err));
-      this.setState({message});
+      this.props.history.push(`/games/${message}`);
     } catch {
+      // TODO: Something better
       const message = "Failed to create game"
       this.setState({message});
     }
-
-  }  
-
-  onFinish = async(game) => {
-    console.log(game)
-    this.setState(
-      {game},
-      await this.handleCreateGame()
-    )
   };
+
   render(){
     return (
       <Form 
@@ -67,9 +60,8 @@ class CreateGameForm extends React.Component {
           name="numPlayers"
         >
           <Select
-            defaultValue={this.state.numPlayers}
-            value={this.state.numPlayers}
             onChange={this.handleNumPlayerChange}
+            placeholder="Select the number of players"
           >
             {this.numPlayerData.map(numPlayer => (
             <Option key={numPlayer}>{numPlayer}</Option>
@@ -88,4 +80,4 @@ class CreateGameForm extends React.Component {
 
 };
 
-export default CreateGameForm;
+export default withRouter(Home);
