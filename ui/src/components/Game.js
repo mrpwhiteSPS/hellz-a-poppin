@@ -33,8 +33,13 @@ class Game extends React.Component{
     this.client.send(JSON.stringify(message))
   }
   
+  ClaimedPositionHandler = ({_id: id, ...game}) => {
+    this.setState({game: {id, ...game}})
+  }
+
   actionHandlers = {
-    GetGame: this.GetGameHandler
+    GetGame: this.GetGameHandler,
+    ClaimedPosition: this.ClaimedPositionHandler
   }
   
   client = new WS('ws://localhost:8000');
@@ -66,16 +71,17 @@ class Game extends React.Component{
         <h1>Name - {name}</h1>
         <h1>Seats</h1>
         {seats.reduce( (acc, {position, player_id}) => {
-          console.log({player_id})
           return player_id === undefined ?
             acc.concat(
-              <UnclaimedSeat 
+              <UnclaimedSeat
+                key={position} 
                 position={position} 
                 onFinish={this.ClaimSeatHanlder}
               />
             ):
             acc.concat(
               <ClaimedSeat
+                key={player_id}
                 playerId={player_id}
               />
             )

@@ -1,4 +1,4 @@
-const {ObjectID} = require('mongodb');
+const {ObjectId} = require('mongodb');
 const {DB} = require('../mongo')
 
 async function handleClaimSeat(
@@ -18,17 +18,37 @@ async function handleClaimSeat(
     position,
     playerId
   })
-  // let r = await dbHAP
-  //   .collection('games')
-  //   .findOne({_id: ObjectID(gameId)});
+  const updateQuery = {
+    "_id": ObjectId(gameId),
+    "seats": { $elemMatch: { position: position } }
+  }
+  const update = {
+    $set: {
+      "seats.$.player_id": playerId
+    }
+  }
+  const config = {
+    upsert: true
+  }
+  let r = await dbHAP
+    .collection('games')
+    .update(updateQuery, update, config);
+  // TODO Assertions
 
-  // const message = {
-  //   action: "GetGame",
-  //   data: r
-  // }
+  const findQuery = {
+    "_id": ObjectId(gameId)
+  }
+  let game = await dbHAP
+    .collection('games')
+    .findOne(findQuery)
+  
   client.close()
-  // console.log(`${client}`)
-  // ws.send(JSON.stringify(message))
+
+  const message = {
+    action: "ClaimedPosition",
+    data: game
+  }
+  ws.send(JSON.stringify(message))
 }
 
 exports.handleClaimSeat = handleClaimSeat;
