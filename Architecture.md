@@ -94,7 +94,7 @@ Return Game ID
 ## A player claims a seat
 This is when the UI will establish a WS with that API.
 
-PATCH /games/:gameId/seats/:seatId
+WS Event
 {
 	playerName: "matthew"
 	seatId: 0

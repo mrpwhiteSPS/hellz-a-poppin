@@ -1,8 +1,10 @@
 let express = require('express');
 let bodyParser = require('body-parser')
 let cors = require('cors');
-let { dbClient } = require('./mongo')
+let { DB } = require('./mongo')
 let {handleGetGame} = require('./wshandlers/GetGame.js')
+let {handleClaimSeat} = require('./wshandlers/ClaimSeat.js')
+let { Game } = require('./models/Game.js')
 let app = express();
 
 app.use(express.json());
@@ -14,17 +16,7 @@ app.listen(3001, function() {
 });
 
 app.post('/games', jsonBodyParser, async ({body}, res)=> {
-  try {
-    await dbClient.connect();
-
-    const db = dbClient.db("hap");
-    let r = await db.collection('games').insertOne(body);
-
-    res.send(r.insertedId);
-  } catch (err) {
-    console.log(err.stack);
-    res.send("Failed to create game");
-  }
+  await Game.handlePostGame(body, res)
 })
 
 const WebSocket = require('ws');
@@ -33,13 +25,14 @@ const wss = new WebSocket.Server({
 });
 
 const WSMessageHandlers = {
-  "GetGame": handleGetGame
+  "GetGame": handleGetGame,
+  "ClaimSeat": handleClaimSeat
 }
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
     const {action, data} = JSON.parse(message)
-    WSMessageHandlers[action](ws, dbClient, data)
+    WSMessageHandlers[action](ws, data)
   });
 });
