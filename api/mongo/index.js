@@ -1,10 +1,13 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const {Config} = require('../Config.js')
 
-// Connection URL
-const url = 'mongodb://db:27017';
+class DB {
+  constructor(){
+    const {mongoUrl} = Config
+    this.client = new MongoClient(mongoUrl);
+  }
+}
 
-// Create a new MongoClient
-const dbClient = new MongoClient(url);
 
-exports.dbClient = dbClient;
+exports.DB = DB;
