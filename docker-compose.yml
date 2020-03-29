@@ -23,11 +23,10 @@ services:
       dockerfile: ./api/Dockerfile
     ports:
       - "3001:3001"
+      - "8000:8000"
     volumes:
-      - ./api/controllers:/app/api/controllers
-      - ./api/models:/app/api/models
-      - ./api/mongo:/app/api/mongo
-      - ./api/index.js:/app/api/index.js
+      - ./api:/app/api
+      - ./api/node_modules
     networks:
       - default
     environment:

@@ -60,9 +60,8 @@ class Home extends React.Component {
           name="numPlayers"
         >
           <Select
-            defaultValue={this.state.numPlayers}
-            value={this.state.numPlayers}
             onChange={this.handleNumPlayerChange}
+            placeholder="Select the number of players"
           >
             {this.numPlayerData.map(numPlayer => (
             <Option key={numPlayer}>{numPlayer}</Option>

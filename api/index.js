@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser')
 let cors = require('cors');
 let { dbClient } = require('./mongo')
-
+let {handleGetGame} = require('./wshandlers/GetGame.js')
 let app = express();
 
 app.use(express.json());
@@ -26,3 +26,20 @@ app.post('/games', jsonBodyParser, async ({body}, res)=> {
     res.send("Failed to create game");
   }
 })
+
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({
+  port: 8000
+});
+
+const WSMessageHandlers = {
+  "GetGame": handleGetGame
+}
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+    const {action, data} = JSON.parse(message)
+    WSMessageHandlers[action](ws, dbClient, data)
+  });
+});
