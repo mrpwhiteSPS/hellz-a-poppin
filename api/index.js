@@ -4,8 +4,10 @@ let cors = require('cors');
 let { DB } = require('./mongo')
 let {handleGetGame} = require('./wshandlers/GetGame.js')
 let {handleClaimSeat} = require('./wshandlers/ClaimSeat.js')
+let {handleStartGame} = require('./wshandlers/StartGame.js')
 let { Game } = require('./models/Game.js')
 let app = express();
+let { uuid } = require('uuidv4');
 
 app.use(express.json());
 app.use(cors());
@@ -26,13 +28,36 @@ const wss = new WebSocket.Server({
 
 const WSMessageHandlers = {
   "GetGame": handleGetGame,
-  "ClaimSeat": handleClaimSeat
+  "ClaimSeat": handleClaimSeat,
+  "StartGame": handleStartGame
+}
+
+let wsGames = {};
+
+function SendGameMessage(gameId, message, ws){
+  Object.entries(wsGames[gameId]).forEach(([clientId, ws]) => {
+    console.log(`Send to client ${clientId} - ${message}`)
+    ws.send(JSON.stringify(message))
+  })
 }
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-    const {action, data} = JSON.parse(message)
-    WSMessageHandlers[action](ws, data)
+    let {clientId, action, data} = JSON.parse(message)
+    const {gameId} = data;
+    if (clientId == undefined ){
+      clientId = uuid()
+      console.log(`Assigning client ID ${clientId}`)
+      wsGames = {
+        ...wsGames, 
+        [gameId]: {
+          ...wsGames[gameId],
+          [clientId]: ws
+        }
+      }
+    }
+    WSMessageHandlers[action](ws, data, clientId, SendGameMessage)
   });
 });
+
+exports.SendGameMessage = SendGameMessage;

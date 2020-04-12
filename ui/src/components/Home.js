@@ -10,7 +10,7 @@ import Axios from 'axios';
 const { Option } = Select
 
 class Home extends React.Component {
-  numPlayerData = [3, 4, 5, 6, 7, 8, 9, 10]
+  numPlayerData = [2, 3, 4, 5, 6, 7, 8, 9, 10]
   state = {
     numPlayers: 3
   }

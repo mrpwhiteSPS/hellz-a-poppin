@@ -23,13 +23,13 @@ Data Model
 ## Games Collection
 Game{
 	seats: [Seat]
-	round: [Round]
+	rounds: [Round]
 }
 
 Round { 
 	position
 	bids: [Bid]
-	turns: [Turn]
+	tricks: [Trick]
 }
 
 Bid {

@@ -7,7 +7,9 @@ async function handleClaimSeat(
     gameId,
     position,
     playerId
-  }
+  },
+  clientId,
+  SendGameMessage
 ){
   const db = new DB()
   const client = db.client
@@ -45,10 +47,12 @@ async function handleClaimSeat(
   client.close()
 
   const message = {
+    clientId,
+    gameId,
     action: "ClaimedPosition",
     data: game
   }
-  ws.send(JSON.stringify(message))
+  SendGameMessage(gameId, message, ws)
 }
 
 exports.handleClaimSeat = handleClaimSeat;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { w3cwebsocket as WS } from "websocket";
 import {withRouter} from 'react-router-dom';
+import {ActionHandlers} from '../utils/WebhookMessages.js'
 import { 
   Button,
   Form,
@@ -9,6 +10,7 @@ import {
 
 class Game extends React.Component{
   state = {
+    clientId: undefined,
     game: {
       id: undefined,
       name: undefined,
@@ -23,6 +25,7 @@ class Game extends React.Component{
 
   ClaimSeatHanlder = ({playerName, seatPosition}) => {
     const message = {
+      clientId: this.state.clientId,
       action: "ClaimSeat",
       data: {
         gameId: this.state.game.id,
@@ -31,6 +34,7 @@ class Game extends React.Component{
       }
     }
     this.client.send(JSON.stringify(message))
+    this.props.history.push(`/games/${this.state.game.id}/players/${playerName}`);
   }
   
   ClaimedPositionHandler = ({_id: id, ...game}) => {
@@ -38,6 +42,7 @@ class Game extends React.Component{
   }
 
   actionHandlers = {
+    ...ActionHandlers,
     GetGame: this.GetGameHandler,
     ClaimedPosition: this.ClaimedPositionHandler
   }
@@ -56,11 +61,21 @@ class Game extends React.Component{
       this.client.send(JSON.stringify(body))
     };
     this.client.onmessage = ({data: msgData}) => {
-      const {action, data} = JSON.parse(msgData)
+      const {clientId, action, data} = JSON.parse(msgData)
+      if (this.state.clientId === undefined) {
+        this.setState(
+          {clientId},
+          this.actionHandlers[action](data)
+        )
+        return  
+      }
       this.actionHandlers[action](data)
     };
   }
   
+  componentWillUnmount = ()=>{
+    this.client.close();
+  }
   
   render(){
     const {id, name, seats} = this.state.game
