@@ -1,7 +1,7 @@
 const {ObjectID} = require('mongodb');
 const {DB} = require('../mongo')
 
-async function handleGetGame(ws, {gameId}){
+async function handleGetGame(ws, {gameId}, clientId, SendGameMessage){
   const db = new DB()
   const client = db.client
   await client.connect()
@@ -10,14 +10,16 @@ async function handleGetGame(ws, {gameId}){
   let r = await dbHAP
     .collection('games')
     .findOne({_id: ObjectID(gameId)});
+  client.close()
 
+  
   const message = {
-    action: "GetGame",
+    clientId,
+    gameId,
+    action: "UpdatedGame",
     data: r
   }
-  client.close()
-  console.log(`${client}`)
-  ws.send(JSON.stringify(message))
+  SendGameMessage(gameId, message, ws)
 }
 
 exports.handleGetGame = handleGetGame;

@@ -8,14 +8,13 @@ class Game{
       const dbClient = db.client
       await dbClient.connect();
       const dbHAP = dbClient.db("hap");
-      console.log({numPlayers})
       const seats = [...Array(parseInt(numPlayers))].map((e, position) => {return {position}})
       const game = {
         seats,
         name
       }
       let r = await dbHAP.collection('games').insertOne(game);
-      res.send(r.insertedId);
+      res.send({_id: r.insertedId});
       dbClient.close()
     } catch (err) {
       console.log(err.stack);

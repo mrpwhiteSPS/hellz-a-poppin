@@ -23,13 +23,16 @@ Data Model
 ## Games Collection
 Game{
 	seats: [Seat]
-	round: [Round]
+	rounds: [Round]
 }
 
 Round { 
-	position
+	number
+	startingHands: [Hand]
+	dealer: Seat
 	bids: [Bid]
-	turns: [Turn]
+	tricks: [Trick]
+	currHand: [Hand]
 }
 
 Bid {
@@ -38,17 +41,17 @@ Bid {
 }
 
 Trick {
-	Player
+	player_id
 	[Card]
 }
 
 Seat {
 	Player_id
 	Position
-	Hand
 }
 
 Hand {
+	player_id
 	[Cards]
 }
 

@@ -42,3 +42,11 @@ services:
     ports:
       - "27017:27017"
     command: mongod
+  # test:
+  #   container_name: test
+  #   build:
+  #     context: .
+  #     dockerfile: ./api/Dockerfile_test
+  #   networks:
+  #     - default
+  #   command: nodemon yarn jest
