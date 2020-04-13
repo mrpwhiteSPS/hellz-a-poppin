@@ -16,7 +16,7 @@ async function handleGetGame(ws, {gameId}, clientId, SendGameMessage){
   const message = {
     clientId,
     gameId,
-    action: "GetGame",
+    action: "UpdatedGame",
     data: r
   }
   SendGameMessage(gameId, message, ws)

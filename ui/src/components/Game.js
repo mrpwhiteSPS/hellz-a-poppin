@@ -3,9 +3,11 @@ import { w3cwebsocket as WS } from "websocket";
 import {withRouter} from 'react-router-dom';
 import {ActionHandlers} from '../utils/WebhookMessages.js'
 import { 
-  Button,
+  Col,
+  Row,
   Form,
-  Input
+  Input,
+  Button
 } from 'antd';
 
 class Game extends React.Component{
@@ -113,7 +115,7 @@ function UnclaimedSeat(props){
       span: 8,
     },
     wrapperCol: {
-      span: 8,
+      span: 15,
     },
   };
   return (
@@ -125,25 +127,37 @@ function UnclaimedSeat(props){
         {seatPosition: props.position}
       }
     >
-      <Form.Item
-        label="Name of Player"
-        name="playerName"
-      >
-        <Input/>
-      </Form.Item>
-      <Form.Item
-        name="seatPosition"
-      >
-        <Button type="primary" htmlType="submit">
-            Claim Seat
-        </Button>
-      </Form.Item>
+      <Row justify="center">
+        <Col span={12}>
+          <Form.Item
+            label="Name of Player"
+            name="playerName"
+          >
+            <Input/>
+          </Form.Item>
+        </Col>
+        <Col span={3}>
+          <Form.Item
+            name="seatPosition"
+          >
+            <Button type="primary" htmlType="submit">
+                Claim Seat
+            </Button>
+          </Form.Item>
+        </Col>
+      </Row>
     </Form>
   )
 }
 
 function ClaimedSeat(props){
-  return <p>Player ID: {props.playerId}</p>
+  return (
+    <Row justify="center">
+      <Col span={12}>
+        <p>Player ID: {props.playerId}</p>
+      </Col>
+    </Row>
+  );
 }
 
 export default withRouter(Game);

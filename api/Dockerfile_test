@@ -1,0 +1,9 @@
+FROM node:12
+
+COPY ./api /app/test
+
+WORKDIR /app/test
+
+RUN npm install -g nodemon
+
+CMD ["nodemon", "yarn", "test"]

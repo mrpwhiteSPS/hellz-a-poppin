@@ -15,11 +15,6 @@ async function handleClaimSeat(
   const client = db.client
   await client.connect()
   const dbHAP = client.db('hap')
-  console.log({
-    gameId,
-    position,
-    playerId
-  })
   const updateQuery = {
     "_id": ObjectId(gameId),
     "seats": { $elemMatch: { position: position } }
@@ -49,7 +44,7 @@ async function handleClaimSeat(
   const message = {
     clientId,
     gameId,
-    action: "ClaimedPosition",
+    action: "UpdatedGame",
     data: game
   }
   SendGameMessage(gameId, message, ws)

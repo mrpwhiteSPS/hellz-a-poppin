@@ -27,9 +27,12 @@ Game{
 }
 
 Round { 
-	position
+	number
+	startingHands: [Hand]
+	dealer: Seat
 	bids: [Bid]
 	tricks: [Trick]
+	currHand: [Hand]
 }
 
 Bid {
@@ -38,17 +41,17 @@ Bid {
 }
 
 Trick {
-	Player
+	player_id
 	[Card]
 }
 
 Seat {
 	Player_id
 	Position
-	Hand
 }
 
 Hand {
+	player_id
 	[Cards]
 }
 
