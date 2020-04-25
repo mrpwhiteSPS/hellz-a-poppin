@@ -2,10 +2,12 @@ const shuffle = require('shuffle');
 
 function InitGameRounds(game){
   const {seats} = game;
+  const numPlayers = seats.length;
   const numRounds  = Math.floor(52 / seats.length) * 2;
 
   const rounds = [...Array(numRounds)].map((e, i) => {
     const roundNum = i + 1
+    
     const numCards = calcNumberOfCards(numRounds, roundNum)
     const deck = shuffle.shuffle()
     const startingHands = seats.map(({player_id}) => {
@@ -14,11 +16,14 @@ function InitGameRounds(game){
         player_id,
         cards
       }
-    })    
+    })
+    
+    const dealerSeatPosition = calcDealerSeatPosition(roundNum, numPlayers)
+    const dealer = seats.find(({position}) => position == dealerSeatPosition)
     return {
       number: roundNum,
       startingHands,
-      // dealer,
+      dealer,
       bids:[],
       tricks: [],
       currHand: startingHands
@@ -26,6 +31,10 @@ function InitGameRounds(game){
   })
 
   return rounds
+}
+
+function calcDealerSeatPosition(currRound, numPlayers){
+  return currRound % numPlayers;
 }
 
 function calcNumberOfCards(numRounds, roundNum){

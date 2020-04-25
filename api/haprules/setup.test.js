@@ -17,3 +17,28 @@ test.each(
     const numCards = calcNumberOfCards(numRounds, roundNum)
     expect(numCards).toEqual(expected)
 })
+
+//   1, 2, 0
+
+//   Bid {
+//     Player_id
+//     SeatPosition
+//     Bid
+//     Accepted  
+//   }
+
+//   []
+//   Then the seat after the dealer
+
+//   [2]
+//   nextSeat()
+
+//   [2, 0]
+
+// 2 => 0
+// 1 => 2
+// 0 => 1
+
+// nextSeat(numSeats, prevSeat){
+//   prevSeat + 1 % numSeats => 0
+// }

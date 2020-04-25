@@ -9,7 +9,6 @@ let {handleMakeBid} = require('./wshandlers/MakeBid.js')
 let { Game } = require('./models/Game.js')
 let { Player } = require('./models/Player.js')
 let app = express();
-let { uuid } = require('uuidv4');
 
 app.use(express.json());
 app.use(cors());
@@ -52,12 +51,14 @@ function SendGameMessage(gameId, message, ws){
 }
 
 wss.on('connection', function connection(ws) {
-  // TODO the client ID should be the {gameID}.{playerID}
   ws.on('message', function incoming(message) {
     let {clientId, action, data} = JSON.parse(message)
     const {gameId} = data;
     if (clientId == undefined ){
-      clientId = uuid()
+      console.log(message)
+      console.error("Client request with no client ID")
+    }
+    if(ws[gameId] == undefined){
       wsGames = {
         ...wsGames, 
         [gameId]: {
@@ -66,6 +67,7 @@ wss.on('connection', function connection(ws) {
         }
       }
     }
+    // console.log(action)
     WSMessageHandlers[action](ws, data, clientId, SendGameMessage)
   });
 });

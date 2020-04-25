@@ -22,3 +22,7 @@ or
 
 Start up docker-compose
 `docker-compose run`
+
+## Testing
+Run the tests locally for now
+`yarn intTest`
