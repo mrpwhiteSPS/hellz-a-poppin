@@ -36,8 +36,9 @@ Round {
 }
 
 Bid {
-	Player_id
-	Bid	
+	player_id
+	position
+	bid
 }
 
 Trick {
@@ -70,7 +71,7 @@ Player {
 }
 
 
-## When the game starts we create:
+## Create a game by:
 POST /games/
 	{
 		gameName: "Best Game"
@@ -128,6 +129,18 @@ Update the players collection
 }
 ## Start the game
 
+
+Message
+```
+{
+  clientId: state.clientId,
+  action: "StartGame",
+  data: {
+    gameId: state.game._id
+  }
+}
+```
+
 Once all of the seats have been claimed, we can start the game.
 API will deal the hands to all the players
 
@@ -168,10 +181,19 @@ update the players collection
 ## Bidding process
 Every player goes around and bids the number of tricks they would like to take.
 
+- The API needs to ensure that the players bid in the correct order
 - The API needs to ensure that the sum of the bids does not equal the number of tricks in that round
+
+
+
+
+
+
 
 Once people have placed their bids
 POST .... TODO... Web Socket?
+
+
 
 ## First turn
 Once everyone has played their cards, we will record a completed turn.
