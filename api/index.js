@@ -6,6 +6,7 @@ let {handleGetGame} = require('./wshandlers/GetGame.js')
 let {handleClaimSeat} = require('./wshandlers/ClaimSeat.js')
 let {handleStartGame} = require('./wshandlers/StartGame.js')
 let {handleMakeBid} = require('./wshandlers/MakeBid.js')
+let {handlePlayCard} = require('./wshandlers/PlayCard.js')
 let { Game } = require('./models/Game.js')
 let { Player } = require('./models/Player.js')
 let app = express();
@@ -39,7 +40,8 @@ const WSMessageHandlers = {
   "GetGame": handleGetGame,
   "ClaimSeat": handleClaimSeat,
   "StartGame": handleStartGame,
-  "MakeBid": handleMakeBid
+  "MakeBid": handleMakeBid,
+  "PlayCard": handlePlayCard
 }
 
 let wsGames = {};

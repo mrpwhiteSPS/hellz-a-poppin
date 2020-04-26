@@ -1,5 +1,8 @@
 const {ObjectId} = require('mongodb');
+const {isEqual} = require('lodash');
+
 const {DB} = require('../mongo')
+const {Game} = require('../models/Game.js')
 
 async function handlePlayCard(
   ws, 
@@ -19,14 +22,40 @@ async function handlePlayCard(
   const findQuery = {
     "_id": ObjectId(gameId)
   }
-  let game = await dbHAP
+  let dbGame = await dbHAP
     .collection('games')
     .findOne(findQuery)
 
-  // Find Player hand
-  // confirm card in hand
+  const cGame = new Game(dbGame)
+
   // confirm player should play next
+  
+
+  // Find Player hand
+  const playerCurHand = cGame.getPlayersHand(playerId)
+  const playerHasCard = playerCurHand.some(hCard => isEqual(card, hCard))
+
+  if(!playerHasCard){
+    console.log("Player does not have card in hand")
+    console.log({playerCurHand, card})
+    return;
+  }
+  
   // confirm card follows suit if possible
+  const {suit: playedSuit} = card
+  const leadSuit = cGame.currPlayLeadSuit()
+  const isLeadSuit = leadSuit != undefined
+  if(isLeadSuit && playedSuit !== leadSuit){
+    console.log("Player did not follow suit")
+    console.log({playedSuit, leadSuit})
+    return;
+  }
+
+  console.log("Player followed suit")
+  console.log({playedSuit, leadSuit})
+
+
+  
   // Is card last card in to play
     // if yes, 
       // add all currTrick cards to Tricks

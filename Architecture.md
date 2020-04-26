@@ -55,9 +55,12 @@ Bid {
 	bid
 }
 
-Trick {
-	[Card]
-	
+Trick{
+	number
+	plays [{
+		playerId
+		card
+	}]
 	// Computed
 	winner: player_id
 }
@@ -75,7 +78,7 @@ Hand {
 
 
 Card {
-	Suite
+	Suit
 	Number			
 }
 

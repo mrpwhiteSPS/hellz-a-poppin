@@ -1,7 +1,6 @@
 const {ObjectId} = require('mongodb');
 const {DB} = require('../mongo')
 const {Game} = require('../models/Game.js')
-const {InitGameRounds} = require('../haprules/setup.js')
 
 async function handleMakeBid(
   ws, 
@@ -30,7 +29,7 @@ async function handleMakeBid(
 
   const currGame = new Game(dbGame)
   // Make sure it is that players turn to bid
-  const bidderSeat = currGame.getPlayerSeat(playerId)
+  const bidderSeat = currGame.getSeatFromPlayerId(playerId)
   const bidderId = bidderSeat.player_id
   
   const currRound = currGame.getCurrRound()

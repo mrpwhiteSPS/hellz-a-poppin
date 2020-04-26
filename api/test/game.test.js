@@ -208,8 +208,28 @@ describe('Run game',() => {
   test('play first trick', async () => {
     const {game} = state
     const cGame = new Game(game)
+    const orderedSeats = cGame.currRoundBidOrder()
+
+    await mapSeries(orderedSeats, async ({position, player_id: clientId}) => {
+      const {ws} = state.players.find(({id}) => clientId == id)
+      const playersHand = cGame.getPlayersHand(clientId)
+
+      const message = {
+        clientId,
+        action: "PlayCard",
+        data: {
+          gameId: state.game._id,
+          playerId: clientId,
+          card: playersHand[0]
+        }
+      }
+      await ws.send(JSON.stringify(message))
+      await new Promise((r) => setTimeout(r, 100));
+    })
+    
     // Determine Current Round
     const currRound = cGame.getCurrRound() 
-    console.log({currRound})
+    console.log(game._id)
+
   })
 })
