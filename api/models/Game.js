@@ -124,7 +124,7 @@ class Game{
   }
 
   getSeatFromSeatNumber(seatNumber){
-    return this.seats.find(({number}) => number == seatNumber)
+    return this.seats.find(({position}) => position == seatNumber)
   }
 
   getNextBidderId(){
@@ -183,7 +183,7 @@ class Game{
     const {round, trick} = this.getCurrRoundAndTrick()
     const isFirstPlay = trick.plays.length == 0
 
-    // If play in ongoing
+    // If not first play of the round
     if(!isFirstPlay){
       // Get the last player to play
       const {playerId: prevPlayerId} = plays[plays.length - 1]
@@ -195,7 +195,17 @@ class Game{
       return playerId
     }
 
-    // If play has not begun
+    // If first play of the round and first round of the game
+    if(round.number == 1){
+      console.log("First round of the game")
+      const {dealer: {position}} = round
+      // console.log(`Dealer position ${position} - ${Game.getNextSeatPosition(this.seats.length, position)}`)
+      const playerSeatNumber = Game.getNextSeatPosition(this.seats.length, position)
+      const {player_id} = this.getSeatFromSeatNumber(playerSeatNumber)
+      return player_id
+    }
+
+    // If first play and not first round
     // Get the winner from the last trick
     const {playerId} = this.getPreviousTrickSeat()
     return playerId
@@ -203,7 +213,8 @@ class Game{
 
   getPreviousTrickSeat(){
     const {round, trick} = this.getCurrRoundAndTrick()
-    
+    const prevRoundNumber = round.number - 1
+
     //If first trick of round
       //Get previous round
       //Get last trick
@@ -232,7 +243,7 @@ class Game{
     return currHand
   }
   
-  static isPlayComplete({cards}){
+  static isTrickComplete({cards}){
 
   }
   // Hand properties

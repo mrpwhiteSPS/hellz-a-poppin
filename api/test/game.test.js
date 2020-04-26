@@ -47,6 +47,11 @@ describe('Run game',() => {
     state = {...state, game}
   }
 
+  beforeAll(async (done) => {
+    // Here for deving and the API needs to reboot
+    await new Promise((r) => setTimeout(r, 2000));
+    done()
+  })
   afterAll(async (done) => {
     // Iterate through the players and close their sockets
     await Promise.all(state.players.map(({ws}) => ws.close()))

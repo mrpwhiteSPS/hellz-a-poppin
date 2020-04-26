@@ -29,7 +29,14 @@ async function handlePlayCard(
   const cGame = new Game(dbGame)
 
   // confirm player should play next
-  
+  const expNextPlayer = cGame.nextPlayerToPlay()
+
+  if(expNextPlayer != playerId){
+    console.log("NOT next player")
+    console.log({expNextPlayer, playerId})
+    return
+  }
+  console.log("Player is next player")
 
   // Find Player hand
   const playerCurHand = cGame.getPlayersHand(playerId)
