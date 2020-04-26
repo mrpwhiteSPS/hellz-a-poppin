@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./index.js"
+    "start": "nodemon --ignore './test/' ./index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +13,11 @@
     "axios": "^0.19.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongodb": "^3.5.5"
+    "jest": "^25.3.0",
+    "mongodb": "^3.5.5",
+    "shuffle": "^0.2.2",
+    "uuidv4": "^6.0.6",
+    "websocket": "^1.0.31",
+    "ws": "^7.2.3"
   }
 }

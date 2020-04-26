@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "jest": "^25.4.0"
+  },
+  "scripts": {
+    "intTest": "jest api/test --watchAll"
+  },
+  "dependencies": {
+    "async": "^3.2.0"
+  }
+}
