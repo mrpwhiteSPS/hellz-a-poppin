@@ -1,6 +1,6 @@
 const {ObjectId} = require('mongodb');
 const {DB} = require('../mongo')
-const {InitGameRounds} = require('../haprules/setup.js')
+const {Game} = require('../models/Game.js')
 
 async function handleStartGame(
   ws, 
@@ -30,7 +30,7 @@ async function handleStartGame(
     "_id": ObjectId(gameId),
   }
   
-  const rounds = InitGameRounds(currGame);
+  const {rounds} = Game.GameFromSeats(currGame);
 
   const update = {
     $set: {

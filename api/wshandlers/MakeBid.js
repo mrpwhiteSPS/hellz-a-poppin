@@ -1,5 +1,6 @@
 const {ObjectId} = require('mongodb');
 const {DB} = require('../mongo')
+const {Game} = require('../models/Game.js')
 const {InitGameRounds} = require('../haprules/setup.js')
 
 async function handleMakeBid(
@@ -23,16 +24,18 @@ async function handleMakeBid(
     "_id": ObjectId(gameId)
   }
   
-  let {seats, rounds} = await dbHAP
+  let dbGame = await dbHAP
     .collection('games')
-    .findOne(findQuery)  
-  // Make sure it is that players turn to bid
-  const bidderSeat = seats.find(({player_id}) => player_id == playerId)
-  const currRound = getCurrRound(rounds)
-  
-  const expNextBidderId = getNextBidderId(currRound, seats)
-  const bidderId = bidderSeat.player_id
+    .findOne(findQuery)
 
+  const currGame = new Game(dbGame)
+  // Make sure it is that players turn to bid
+  const bidderSeat = currGame.getPlayerSeat(playerId)
+  const bidderId = bidderSeat.player_id
+  
+  const currRound = currGame.getCurrRound()
+  const expNextBidderId = currGame.getNextBidderId()
+  
   if (expNextBidderId !== bidderId){
     console.log("Incorrect Bidder")
   }else {
@@ -88,27 +91,6 @@ async function handleMakeBid(
   SendGameMessage(gameId, message, ws)
 }
 
-
-function getNextBidderId(currRound, seats){
-  // return a player id for the next bidder
-  const {dealer, bids} = currRound;
-  const lastBidder = bids[bids.length - 1]
-  const {position} = !lastBidder ? dealer : lastBidder
-  const nextPosition = getNextSeatPosition(seats.length, position)
-  const {player_id} = seats.find(({position}) => {
-    return position == nextPosition
-  })
-  return player_id
-}
-
-function getNextSeatPosition(numSeats, prevSeat){
-  return (prevSeat + 1) % numSeats
-}
-
-function getCurrRound(rounds){
-  return rounds.find(({tricks}) => tricks.length === 0)
-}
-
 function checkLegalBid(currRound, currBid){
   const maxNumBids = currRound.startingHands[0].cards.length;
   const legalBidSize = maxNumBids >= currBid
@@ -125,6 +107,3 @@ function checkLegalBid(currRound, currBid){
 }
 
 exports.handleMakeBid = handleMakeBid;
-exports.getNextBidderId = getNextBidderId;
-exports.getNextSeatPosition = getNextSeatPosition;
-exports.getCurrRound = getCurrRound;

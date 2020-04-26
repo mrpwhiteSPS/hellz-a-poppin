@@ -1,5 +1,5 @@
 const {mapSeries} = require('async');
-
+const {Game} = require('../models/Game.js')
 const {
   CreateGame,
   GetWSClient,
@@ -159,6 +159,7 @@ describe('Run game',() => {
 
   test('Start game', async () => {
     // One of the players needs to start the game
+    // TODO: that is a gross line of code....
     const {ws, id:clientId} = state.players[0]
     const message = {
       clientId: clientId,
@@ -168,42 +169,17 @@ describe('Run game',() => {
       }
     }
     await ws.send(JSON.stringify(message))
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 200));
     const {game: {rounds}} = state
     expect(rounds.length).toEqual(34)
   })
 
-  xtest('Players bid incorrect order', async () => {
-    console.log(state.game.seats)
-    // const message = {
-    //   clientId: state.clientId,
-    //   action: "StartGame",
-    //   data: {
-    //     gameId: state.game._id
-    //   }
-    // }
-    // await ws.send(JSON.stringify(message))
-    // await new Promise((r) => setTimeout(r, 50));
-
-  })
-
   test('Players continue to bid in the correct order', async () => {
     const {game} = state
-    const {rounds, seats} = game
-    // Determine Current Round
-    const currRound = getCurrRound(rounds) 
-    const startingBidderId = getNextBidderId(currRound, seats)
-    const {position: startingBidderSeat} = seats.find(({player_id}) => player_id == startingBidderId)
-    
-    const [lastSeatPostion, orderedSeats] = seats.reduce(([prevSeat, accum], seat) => {
-      const nextSeat = seats.find(({position}) => position == prevSeat)
-      const nextSeatPostion = getNextSeatPosition(seats.length, prevSeat)
-      return [nextSeatPostion, accum.concat(nextSeat)]
-    }, [startingBidderSeat, []])
-
+    const cGame = new Game(game)
+    const orderedSeats = cGame.currRoundBidOrder()
 
     await mapSeries(orderedSeats, async ({position, player_id: clientId}) => {
-    // const {position, player_id: clientId} = orderedSeats[0]
       const {ws} = state.players.find(({id}) => clientId == id)
 
       const message = {
@@ -219,7 +195,7 @@ describe('Run game',() => {
       await new Promise((r) => setTimeout(r, 100));
     })
 
-    const {number: currRoundNumber} = currRound;
+    const {number: currRoundNumber} = cGame.getCurrRound();
     const bidRound = state.game.rounds.find(({number}) => number == currRoundNumber)
 
     expect(bidRound.bids.length).toEqual(3)
@@ -227,5 +203,13 @@ describe('Run game',() => {
       expect(Object.keys(bid)).toEqual(["player_id", "position", "bid"])
       expect(bid.bid).toEqual(1)
     })
+  })
+
+  test('play first trick', async () => {
+    const {game} = state
+    const cGame = new Game(game)
+    // Determine Current Round
+    const currRound = cGame.getCurrRound() 
+    console.log({currRound})
   })
 })

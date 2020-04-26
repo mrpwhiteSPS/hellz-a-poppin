@@ -24,15 +24,29 @@ Data Model
 Game{
 	seats: [Seat]
 	rounds: [Round]
+
+
+	//Computed values
+	scoreboard: 
+
 }
 
 Round { 
 	number
 	startingHands: [Hand]
-	dealer: Seat
+
+	dealer: Seat // Maybe computed
 	bids: [Bid]
-	tricks: [Trick]
+	Tricks: [Trick]
+	
+	// These should be computed properties
+	currLeadSuit: Suit
+	currLeader: Seat
 	currHand: [Hand]
+	currTrick: [{
+		Player_id,
+		Card
+	}]
 }
 
 Bid {
@@ -42,8 +56,10 @@ Bid {
 }
 
 Trick {
-	player_id
 	[Card]
+	
+	// Computed
+	winner: player_id
 }
 
 Seat {
