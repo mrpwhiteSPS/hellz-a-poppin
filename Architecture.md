@@ -25,10 +25,41 @@ https://www.npmjs.com/package/shuffle
 Data Model
 
 Game{
-	[Player]
-	Number of Players
-	[Turn]
-	Number of Turns
+	seats: [Seat]
+	rounds: [Round]
+
+	//Computed values
+	scoreboard: 
+}
+
+Round { 
+	number
+	startingHands: [Hand]
+	dealer: Seat // Maybe computed
+	bids: [Bid]
+	Tricks: [Trick]
+	
+	// These should be computed properties
+	currLeadSuit: Suit
+	currLeader: Seat
+	currHand: [Hand]
+	currTrick: [{
+		Player_id,
+		Card
+	}]
+}
+
+Bid {
+	player_id
+	position
+	bid
+}
+
+Trick {
+	[Card]
+	
+	// Computed
+	winner: player_id
 }
 
 Player {
